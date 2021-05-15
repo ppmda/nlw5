@@ -88,3 +88,5 @@ Dentro do paths, ira inserir os elementos mais acessados e o restante, como inse
 *----------------------------------------------------------------------------------------------------------------------------------------------*
 #Context API
 É uma funcionalidade do react que permite que podemos compartilhar dados entre componentes da nossa aplicação
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
