@@ -1,0 +1,90 @@
+Código da aula 1: #missaoespacial
+Código da aula 2: #embuscadoproximonivel
+Código da aula 3: #astronautas
+Código da aula 4: #universoinfinito
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
+export default function Home(props) {
+  /*esse é o modo SPA
+  useEffect(() => {
+    fetch('http://localhost:3333/episodes')
+      .then(response => response.json())
+      .then(data => console.log(data))
+  }, [])*/ // no Modo SPA fica assim somente
+
+  return (
+    <div>
+      <h1>Index</h1>
+      <p>{JSON.stringify(props.episodes)}</p>
+    </div>
+  )
+}
+
+// vai executar toda vez que alguem acessar a home da noss aplicação
+/* Esse é o modo de SSR
+export async function getServerSideProps() {
+  const response = await fetch('http://localhost:3333/episodes')
+  const data = await response.json()
+
+  return {
+    props: {
+      episodes: data,
+    }
+  }
+} */
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
+<h1>Index</h1>
+      <p>{JSON.stringify(props.episodes)}</p> < esse é pra mostra os dados que tem no servidor
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
+O Map no react, percorre algo retornando algo, sempre que quiser percorrer uma lista utilizar ele pois ira retornar tb
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
+Erro visivel no Console apenas:
+"Warning: Each child in a list should have a unique "key" prop."
+
+  Esse erro é referente a não encontrar a key.
+Quando utilizamos o elemento .map, precisa obrigatoriamente no primeiro elemento do return adicionar uma propriedade. Essa propriedade é somente para o React, ela se chama key. Bom inserir a informação unica que existe entre os elementos, ex o Id, pois nunca vai se repetir.
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
+No next podemos utilizar o impor do Image, mas como geralmente ela fica hospedada em outro lugar, temos que importar essa parte tbm, podemos ver o exemplo pelo arquivo: next.config.js
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
+No scss, quando tem uma classe encadiada, podemos fazer dentro da tag. Ex a tag <li> utilizamos a classe .episodeDetails (arquivo home.module.scss)
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
+Por questões de performance, sempre que for criar uma nova informação no react é interessante sempre copiar a informação anterior e criar uma nova, do que
+simplismente atualizar uma nova. Principio da imutabilidade.
+EX:
+const episodeList = [...latestEpisodes, ...allEpisodes];
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
+Pelo método "getStaticProps", podemos gerar de uma forma dinamica uma pagina estatica, dando o 'yarn build' no terminal.
+A parte de geração estatica, só funciona no projeto se a gente executar como se tivesse em produção (gerar uma build)
+
+Explicação sobre o método: "getStaticPaths", que esta sendo utilizado na rota [slug]
+No next, no principal momento que gera a pagina, é no momento da build.
+Esse metodo retorna quais objetos queremos gerar de forma estatica no momento da build.
+
+Quando passamos a propriedade "paths: []" vazia, no momento da build o next não vai gerar nenhum episodio de forma estatica
+Se passarmos a propriedade paths vazia e o "fallback: false", se a pessoa acessar a pagina estatica de um caso onde não foi gerado no momento da build, retorna o erro 404 (erro: nao encontrado), somente ira gerar o conteudo da pagina que tiver passado dentro do metodo paths, e somente os que estiverem dentro.
+
+Se passar o "fallback: true" e não tiver gerado a pagina de forma estatica pois nao passamos nenhum paramentro dentro de paths, ele vai tentar buscar os dados da pagina que acessou, pra cria uma pag estatica e salvar em disco. Faz com que a requisição dentro do getStaticProps, aconteça pelo lado do client, ou seja do lado do Browser.
+No build do projeto, quando rodamos ele retornou undefined porque ainda não foi pegado os dados da propriedade episode, porque tem uma demora pra retornar esses dados. Para solução pode importar o router nessa função:
+//verificar se esta em carregamento
+export default function Episode({ episode }: EpisodeProps) {
+    const router = useRouter();
+
+    if (router.isFallback) {
+        return <p>Carregando...</p>
+    }
+Assim quando rodar o build novamente, ele vai conseguir carregar a página somente quando o usuário for acessar ela.
+
+A propriedade "fallback: 'blocking'", roda a requisição para buscar os dados de dentro da camada do next.js (client (browser) - next.js(node.js) - server(back-end)), ou seja, quando a pessoa clicar no link, só vai ser navegada pra tela, quando os dados ja tiverem sido carregados. Para questões de SEO, é a melhor opção , porque se um crawler acessar o conteudo da app, que ainda nao foi gerado de forma estatica, esse conteudo tb vai aguardar ser carregado e então ser exibido.
+
+Dentro do paths, ira inserir os elementos mais acessados e o restante, como inserimos o fallback: blocking, vai sendo gerado conforme as pessoas acessam a pagina, elas sao geradas de forma estatica.
+
+*----------------------------------------------------------------------------------------------------------------------------------------------*
+#Context API
+É uma funcionalidade do react que permite que podemos compartilhar dados entre componentes da nossa aplicação
